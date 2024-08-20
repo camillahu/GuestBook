@@ -17,7 +17,7 @@ namespace GuestBook
     {
         private SqlConnection DbCon()
         {
-            string _connStr =
+            const string _connStr =
             @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=GuestBookDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;";
             SqlConnection connection = new(_connStr);
             connection.Open();
@@ -29,7 +29,7 @@ namespace GuestBook
         {
             using SqlConnection connection = DbCon();
 
-            string querySelectAllGuests = "SELECT * FROM dbo.Guests";
+            const string querySelectAllGuests = "SELECT * FROM dbo.Guests";
 
             SqlCommand command = new(querySelectAllGuests, connection);
 
@@ -55,7 +55,7 @@ namespace GuestBook
         {
             using SqlConnection connection = DbCon();
             //string getPartyId = "SELECT TOP 1 Id FROM dbo.parties ORDER BY Id DESC";
-            string query = @"INSERT INTO dbo.parties (FirstName, LastName, PartyDate, NumOfGuests)
+            const string query = @"INSERT INTO dbo.parties (FirstName, LastName, PartyDate, NumOfGuests)
                                  VALUES (@FirstName, @LastName, @PartyDate, @NumOfGuests);
                                  SELECT SCOPE_IDENTITY()"; //SCOPE_IDENTITY() gir ID'en til den siste raden satt inn av denne spørringen
 
@@ -87,57 +87,23 @@ namespace GuestBook
             {
                 connection.Close();
             }
-
-
-
-
-            //SqlCommand command1 = new SqlCommand(queryInsertParty, connection);
-            //SqlCommand command2 = new SqlCommand(getPartyId, connection);
-
-            //var parameters = new[]
-            //{
-            //    new SqlParameter("@FirstName", firstName),
-            //    new SqlParameter("@LastName", lastName),
-            //    new SqlParameter("@PartyDate", dateTime),
-            //    new SqlParameter("@NumOfGuests", numOfGuests)
-            //};
-
-            //command1.Parameters.AddRange(parameters);
-
-            //try
-            //{
-            //    connection.Open();
-            //    int rowsAffected = command1.ExecuteNonQuery(); //excecutenonquery brukes for å utføre insert, update, delete og schema endringer. 
-            //    $"Rows affected: {rowsAffected}".PrintStringToConsole();
-
-            //    SqlDataReader reader = command2.ExecuteReader();
-            //    if (reader.Read()) return reader.GetInt32(0);
-            //    else throw new Exception("No parties found");
-                    
-            //}
-            //catch (Exception ex)
-            //{
-            //    $"Error + {ex.Message}".PrintStringToConsole();  //ex.message gir error message
-            //}
-            //connection.Close();
         }
 
-        public void AddGuestToDb(int PartyId, Guest newGuest)
+        public void AddGuestToDb(Guest newGuest)
         {
             using SqlConnection connection = DbCon();
             //string getPartyId = "SELECT TOP 1 Id FROM dbo.parties ORDER BY Id DESC";
-            string query = @"INSERT INTO dbo.parties (FirstName, LastName, PartyDate, NumOfGuests)
-                                 VALUES (@FirstName, @LastName, @PartyDate, @NumOfGuests);
-                                 SELECT SCOPE_IDENTITY()"; //SCOPE_IDENTITY() gir ID'en til den siste raden satt inn av denne spørringen
+            const string query = @"INSERT INTO dbo.parties (FirstName, LastName, IsBookingName, PartyId)
+                                 VALUES (@FirstName, @LastName, @IsBookingName, @PartyId)";
 
             SqlCommand command = new(query, connection);
 
             var parameters = new[]
             {
-                new SqlParameter("@FirstName", newParty.FirstName),
-                new SqlParameter("@LastName", newParty.LastName),
-                new SqlParameter("@PartyDate", newParty.PartyDate),
-                new SqlParameter("@NumOfGuests", newParty.NumOfGuests)
+                new SqlParameter("@FirstName", newGuest.FirstName),
+                new SqlParameter("@LastName", newGuest.LastName),
+                new SqlParameter("@IsBookingName", newGuest.IsBookingName),
+                new SqlParameter("@PartyId", newGuest.PartyId)
             };
 
             command.Parameters.AddRange(parameters);
@@ -145,14 +111,10 @@ namespace GuestBook
             try
             {
                 connection.Open();
-                object result = command.ExecuteScalar(); //ExecuteScalar() returnerer verdien fra SELECT-delen av spørringen, som er ID-en til den nye raden
-                if (result != null) return Convert.ToInt32(result);
-                else throw new Exception("Failed to retrieve the new party ID");
             }
             catch (Exception ex)
             {
                 $"Error: {ex.Message}".PrintStringToConsole();
-                return -1; // Returner en verdi som indikerer feil
             }
             finally
             {

@@ -11,16 +11,14 @@ namespace GuestBook
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsBookingName { get; set; }
-        public int PartiId { get; set; }
+        public int PartyId { get; set; }
 
-        public Guest(string name)
+        public Guest(string firstName, string lastName, bool isBookingName, int partyId)
         {
-            Name = name;
-        }
-
-        public string GetName()
-        {
-            return Name;
+            FirstName = firstName;
+            LastName = lastName;
+            IsBookingName = isBookingName;
+            PartyId = partyId;
         }
     }
 }

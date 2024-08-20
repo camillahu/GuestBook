@@ -20,10 +20,12 @@ namespace GuestBook.Commands
 
             Party newParty = AddParty();
             int partyId = dbConnection.AddPartyToDb(newParty);
-            AddBookingGuest(newParty, true, partyId );
-            AddGuest(true, partyId);
-            dbConnection.AddGuestToDb();
-
+            Guest bookingGuest = GetBookingGuest(newParty, partyId);
+            dbConnection.AddGuestToDb(bookingGuest);
+            while (AddingGuestsChoice())
+            {
+                dbConnection.AddGuestToDb(GetGuest(partyId));
+            }
         }
 
         public Party AddParty()
@@ -33,23 +35,26 @@ namespace GuestBook.Commands
             string lastName = "Last Name:".RequestString();
             DateTime date = DateTime.Now; //skal egt gjøre sånn at man kan sette inn dato selv, men gjør det bare sånn enn så lenge
             int numOfGuests = "NumberOfGuests:".RequestInt();
-
             Party newParty = new Party(firstName, lastName, date, numOfGuests);
+            
             return newParty;
         }
 
-        public void AddBookingGuest(Party newParty, bool isBookingName, int partyId)
+        public Guest GetBookingGuest(Party newParty, int partyId)
         {
-            //start her 
+            string firstName = newParty.FirstName;
+            string lastName = newParty.LastName;
+            Guest bookingGuest = new Guest(firstName, lastName, true, partyId);
+
+            return bookingGuest;  //start her neste gang. hvordan gjøre bool til bit io db på best mulig måte?
         }
 
-        Guest AddGuest(isBookingName = false, partyId)
+        Guest GetGuest(int partyId)
         {
             "Type in the info of a guest:".PrintStringToConsole();
             string firstName = "First Name:".RequestString();
             string lastName = "Last Name:".RequestString();
-            bool IsBookingName = isBookingName;
-            Guest newGuest = new Guest(name);
+            Guest newGuest = new Guest(firstName, lastName, false, partyId );
             return newGuest;
         }
 

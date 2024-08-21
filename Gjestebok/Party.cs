@@ -15,12 +15,11 @@ namespace GuestBook
 
         private List<Guest> Guests {get;} = [];
 
-        public Party(string firstName, string lastName, DateTime partyDate, int numOfGuests)
+        public Party(string firstName, string lastName, DateTime partyDate)
         {
             FirstName = firstName;
             LastName = lastName;
             PartyDate = partyDate;
-            NumOfGuests = numOfGuests;
         }
 
         public int GetPartySize()
@@ -45,7 +44,7 @@ namespace GuestBook
             //$"Reservation name: {ReservationName}".PrintStringToConsole();
             foreach (Guest guest in Guests)
             {
-                guest.GetName().PrintStringToConsole();
+                $"{guest.FirstName} {guest.LastName}".PrintStringToConsole();
             }
         }
     }

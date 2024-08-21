@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections;
+using System.ComponentModel;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 
@@ -25,11 +26,11 @@ namespace GuestBook
         }
         
 
-        public void GetAllGuests()
+        public void GetAllParties()
         {
             using SqlConnection connection = DbCon();
 
-            const string querySelectAllGuests = "SELECT * FROM dbo.Guests";
+            const string querySelectAllGuests = "SELECT LastName, FirstName, [DateTime] FROM dbo.Parties";
 
             SqlCommand command = new(querySelectAllGuests, connection);
 
@@ -40,7 +41,7 @@ namespace GuestBook
 
                 while (reader.Read())
                 {
-                    $"{reader["Id"]}, {reader["FirstName"]}, {reader["LastName"]}".PrintStringToConsole();
+                    $"{reader["FirstName"]}, {reader["LastName"]}, {reader["DateTime"]}".PrintStringToConsole();
                 }
 
                 reader.Close();
@@ -48,6 +49,10 @@ namespace GuestBook
             catch (Exception ex)
             {
                 $"Error + {ex.Message}".PrintStringToConsole();
+            }
+            finally
+            {
+                connection.Close();
             }
         }
 
@@ -95,6 +100,7 @@ namespace GuestBook
             //string getPartyId = "SELECT TOP 1 Id FROM dbo.parties ORDER BY Id DESC";
             const string query = @"INSERT INTO dbo.parties (FirstName, LastName, IsBookingName, PartyId)
                                  VALUES (@FirstName, @LastName, @IsBookingName, @PartyId)";
+            
 
             SqlCommand command = new(query, connection);
 
@@ -106,7 +112,7 @@ namespace GuestBook
                 new SqlParameter("@PartyId", newGuest.PartyId)
             };
 
-            command.Parameters.AddRange(parameters);
+            command.Parameters.AddRange(parameters); 
 
             try
             {

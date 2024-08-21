@@ -34,8 +34,7 @@ namespace GuestBook.Commands
             string firstName = "First Name:".RequestString();
             string lastName = "Last Name:".RequestString();
             DateTime date = DateTime.Now; //skal egt gjøre sånn at man kan sette inn dato selv, men gjør det bare sånn enn så lenge
-            int numOfGuests = "NumberOfGuests:".RequestInt();
-            Party newParty = new Party(firstName, lastName, date, numOfGuests);
+            Party newParty = new Party(firstName, lastName, date);
             
             return newParty;
         }
@@ -44,9 +43,9 @@ namespace GuestBook.Commands
         {
             string firstName = newParty.FirstName;
             string lastName = newParty.LastName;
-            Guest bookingGuest = new Guest(firstName, lastName, true, partyId);
+            Guest bookingGuest = new Guest(firstName, lastName, 1, partyId);
 
-            return bookingGuest;  //start her neste gang. hvordan gjøre bool til bit io db på best mulig måte?
+            return bookingGuest; 
         }
 
         Guest GetGuest(int partyId)
@@ -54,15 +53,15 @@ namespace GuestBook.Commands
             "Type in the info of a guest:".PrintStringToConsole();
             string firstName = "First Name:".RequestString();
             string lastName = "Last Name:".RequestString();
-            Guest newGuest = new Guest(firstName, lastName, false, partyId );
+            Guest newGuest = new Guest(firstName, lastName, 0, partyId );
             return newGuest;
         }
 
         public bool AddingGuestsChoice()
         {
             string answer = "Type 1 to add new guest, type anything else to quit making party: ".RequestString();
-
-            return answer == "1";
+            
+            return answer == "1"; 
         }
     }
 }

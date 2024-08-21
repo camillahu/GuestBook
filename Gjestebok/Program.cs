@@ -3,6 +3,7 @@ using GuestBook;
 using GuestBook.Commands;
 
 DbConnection connection = new DbConnection();
+DbConWDapper dapperConn = new DbConWDapper();
 List<Party> parties = new List<Party>();
 
 List<ICommand?> commands =
@@ -18,6 +19,7 @@ MainMenu();
 void MainMenu()
 {
     bool mainMenuRunning = true;
+    //dapperConn.PrintParties();
     $"Welcome to the booking system".PrintStringToConsole();
 
     while (mainMenuRunning)
@@ -27,7 +29,7 @@ void MainMenu()
         choice?.Execute(connection); //vits i å gjøre alt nullable?
         mainMenuRunning = true;
 
-    }
+    }  //ingenting funkeeeer
 }
 
 ICommand? ChooseOption()

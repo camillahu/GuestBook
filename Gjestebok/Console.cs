@@ -7,11 +7,18 @@ using System.Threading.Tasks;
 namespace GuestBook
 {
     public static class Console
-    {
+    {     //#region consoleMethods
+
+
+       
         public static void PrintStringToConsole(this string message)
         {
            System.Console.WriteLine(message);
-        }
+        }/// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message">Denne extention-metoden tar det som står før metodenavnet og sender som parameter</param>
+        /// <returns></returns>
 
         public static string RequestString(this string message)
         {
@@ -24,7 +31,11 @@ namespace GuestBook
             }
 
             return input;
-        }
+        } /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message">Denne extention-metoden printer stringen som står før metodenavnet, og tar brukerinput som den returnerer.</param>
+        /// <returns></returns>
 
         public static int RequestInt(this string message)
         {
@@ -43,8 +54,8 @@ namespace GuestBook
                     "Invalid input, please try again".PrintStringToConsole();
                 } 
             }
-
             return output;
         }
     }
+    //#endregion 
 }

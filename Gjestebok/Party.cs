@@ -15,11 +15,12 @@ namespace GuestBook
 
         private List<Guest> Guests {get;} = [];
 
-        public Party(string firstName, string lastName, DateTime partyDate)
+        public Party(string firstName, string lastName, DateTime date, int numOfGuests)
         {
             FirstName = firstName;
             LastName = lastName;
-            PartyDate = partyDate;
+            PartyDate = date;
+            NumOfGuests = numOfGuests;
         }
 
         public int GetPartySize()

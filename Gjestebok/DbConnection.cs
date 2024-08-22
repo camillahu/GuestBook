@@ -30,18 +30,17 @@ namespace GuestBook
         {
             using SqlConnection connection = DbCon();
 
-            const string querySelectAllGuests = "SELECT LastName, FirstName, [DateTime] FROM dbo.Parties";
+            const string querySelectAllGuests = "SELECT LastName, FirstName, PartyDate FROM dbo.Parties";
 
             SqlCommand command = new(querySelectAllGuests, connection);
 
             try
             {
-                connection.Open();
                 SqlDataReader reader = command.ExecuteReader(); //sqldatareader leser dataen så fort første bokstav er lest in real time, så man slipper å vente på at all dataen er lasta inn. 
 
                 while (reader.Read())
                 {
-                    $"{reader["FirstName"]}, {reader["LastName"]}, {reader["DateTime"]}".PrintStringToConsole();
+                    $"{reader["FirstName"]}, {reader["LastName"]}, {reader["PartyDate"]}".PrintStringToConsole();
                 }
 
                 reader.Close();
@@ -49,10 +48,6 @@ namespace GuestBook
             catch (Exception ex)
             {
                 $"Error + {ex.Message}".PrintStringToConsole();
-            }
-            finally
-            {
-                connection.Close();
             }
         }
 
@@ -78,19 +73,14 @@ namespace GuestBook
 
             try
             {
-                connection.Open();
                 object result = command.ExecuteScalar(); //ExecuteScalar() returnerer verdien fra SELECT-delen av spørringen, som er ID-en til den nye raden
-                if (result != null) return Convert.ToInt32(result);
+                if (result != null) return Convert.ToInt32(result); // denne returnerer noe rart? 
                 else throw new Exception("Failed to retrieve the new party ID");
             } 
             catch (Exception ex)
             {
                 $"Error: {ex.Message}".PrintStringToConsole();
                 return -1; // Returner en verdi som indikerer feil
-            }
-            finally
-            {
-                connection.Close();
             }
         }
 
@@ -116,15 +106,11 @@ namespace GuestBook
 
             try
             {
-                connection.Open();
+                command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
                 $"Error: {ex.Message}".PrintStringToConsole();
-            }
-            finally
-            {
-                connection.Close();
             }
         }
 

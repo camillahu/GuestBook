@@ -33,17 +33,18 @@ namespace GuestBook.Commands
             "Type in the name of the person responsible for the party.".PrintStringToConsole();
             string firstName = "First Name:".RequestString();
             string lastName = "Last Name:".RequestString();
-            DateTime date = DateTime.Now; //skal egt gjøre sånn at man kan sette inn dato selv, men gjør det bare sånn enn så lenge
-            Party newParty = new Party(firstName, lastName, date);
+            DateTime date = DateTime.Now.Date; //skal egt gjøre sånn at man kan sette inn dato selv, men gjør det bare sånn enn så lenge
             
-            return newParty;
+            Party newParty = new Party(firstName, lastName, date, 1);
+            
+            return newParty; // id blir 100-et eller annet? 
         }
 
         public Guest GetBookingGuest(Party newParty, int partyId)
         {
             string firstName = newParty.FirstName;
             string lastName = newParty.LastName;
-            Guest bookingGuest = new Guest(firstName, lastName, 1, partyId);
+            Guest bookingGuest = new Guest(firstName, lastName, true, partyId);
 
             return bookingGuest; 
         }
@@ -53,7 +54,7 @@ namespace GuestBook.Commands
             "Type in the info of a guest:".PrintStringToConsole();
             string firstName = "First Name:".RequestString();
             string lastName = "Last Name:".RequestString();
-            Guest newGuest = new Guest(firstName, lastName, 0, partyId );
+            Guest newGuest = new Guest(firstName, lastName, false, partyId );
             return newGuest;
         }
 

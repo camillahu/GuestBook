@@ -13,7 +13,7 @@ namespace GuestBook.Commands
         public string Text => "See all parties with names";
         public void Execute(DbConnection connection)
         {
-            //connection.PrintDetailedBookList();
+            connection.GetAllPartiesWNames();
             "".PrintStringToConsole();
         }
     }

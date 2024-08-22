@@ -51,11 +51,36 @@ namespace GuestBook
             }
         }
 
+        public void GetAllPartiesWNames()
+        {
+            using SqlConnection connection = DbCon();
+
+            const string querySelectAllGuests = "SELECT * FROM Parties JOIN Guests ON Parties.Id = Guests.PartyId";
+
+            SqlCommand command = new(querySelectAllGuests, connection);
+
+            try
+            {
+                SqlDataReader reader = command.ExecuteReader(); //sqldatareader leser dataen så fort første bokstav er lest in real time, så man slipper å vente på at all dataen er lasta inn. 
+
+                while (reader.Read())
+                {
+                    $"{reader["FirstName"]}, {reader["LastName"]}, {reader["PartyDate"]}".PrintStringToConsole();
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                $"Error + {ex.Message}".PrintStringToConsole();
+            }
+        }
+
         public int AddPartyToDb(Party newParty)
         {
             using SqlConnection connection = DbCon();
             //string getPartyId = "SELECT TOP 1 Id FROM dbo.parties ORDER BY Id DESC";
-            const string query = @"INSERT INTO dbo.parties (FirstName, LastName, PartyDate, NumOfGuests)
+            const string query = @"INSERT INTO dbo.Parties (FirstName, LastName, PartyDate, NumOfGuests)
                                  VALUES (@FirstName, @LastName, @PartyDate, @NumOfGuests);
                                  SELECT SCOPE_IDENTITY()"; //SCOPE_IDENTITY() gir ID'en til den siste raden satt inn av denne spørringen
 
@@ -88,7 +113,7 @@ namespace GuestBook
         {
             using SqlConnection connection = DbCon();
             //string getPartyId = "SELECT TOP 1 Id FROM dbo.parties ORDER BY Id DESC";
-            const string query = @"INSERT INTO dbo.parties (FirstName, LastName, IsBookingName, PartyId)
+            const string query = @"INSERT INTO dbo.Guests (FirstName, LastName, IsBookingName, PartyId)
                                  VALUES (@FirstName, @LastName, @IsBookingName, @PartyId)";
             
 

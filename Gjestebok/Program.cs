@@ -26,7 +26,7 @@ void MainMenu()
     {
         ViewCommands();
         ICommand? choice = ChooseOption();
-        choice?.Execute(connection); //vits i å gjøre alt nullable?
+        choice?.Execute(connection, parties); //vits i å gjøre alt nullable?
         mainMenuRunning = true;
 
     }  //ingenting funkeeeer

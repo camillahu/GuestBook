@@ -10,10 +10,10 @@ namespace GuestBook.Commands
     {
         public int Id => 3;
         public string Text => "See all parties";
-        public void Execute(DbConnection connection)
+        public void Execute(DbConnection connection, List<Party> parties)
         {
-            connection.GetAllParties();
-            "".PrintStringToConsole();
+            connection.GetAllParties(parties);
+            "".PrintStringToConsole(); 
         }
     }
 }

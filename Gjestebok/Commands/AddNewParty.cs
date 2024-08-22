@@ -14,7 +14,7 @@ namespace GuestBook.Commands
         public int Id => 1;
         public string Text => "Add new party";
 
-        public void Execute(DbConnection dbConnection)
+        public void Execute(DbConnection dbConnection, List<Party> parties)
         {
             //hvordan få sendt nytt party til lista i program? 
 
@@ -26,6 +26,8 @@ namespace GuestBook.Commands
             {
                 dbConnection.AddGuestToDb(GetGuest(partyId));
             }
+            int count = dbConnection.GetNumOfGuests(partyId);
+            dbConnection.UpdateNumOfGuests(partyId, count);
         }
 
         public Party AddParty()

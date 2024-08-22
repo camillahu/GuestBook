@@ -11,7 +11,7 @@ namespace GuestBook.Commands
     {
         public int Id => 2;
         public string Text => "Search for party";
-        public void Execute(DbConnection connection)
+        public void Execute(DbConnection connection, List<Party> parties)
         {
             string name = "Type your name search here:".RequestString();
 

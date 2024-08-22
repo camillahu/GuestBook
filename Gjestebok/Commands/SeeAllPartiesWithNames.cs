@@ -11,7 +11,7 @@ namespace GuestBook.Commands
     {
         public int Id => 4;
         public string Text => "See all parties with names";
-        public void Execute(DbConnection connection)
+        public void Execute(DbConnection connection, List<Party> parties)
         {
             connection.GetAllPartiesWNames();
             "".PrintStringToConsole();

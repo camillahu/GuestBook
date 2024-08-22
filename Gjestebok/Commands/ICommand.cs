@@ -10,7 +10,7 @@ namespace GuestBook.Commands
     {
         public int Id { get; }
         public string Text { get; }
-        public void Execute(DbConnection connection);
+        public void Execute(DbConnection connection, List<Party> parties);
 
     }
 }

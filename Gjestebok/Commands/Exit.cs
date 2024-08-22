@@ -10,7 +10,7 @@ namespace GuestBook.Commands
     {
         public int Id => 5;
         public string Text => "Exit";
-        public void Execute(DbConnection connection)
+        public void Execute(DbConnection connection, List<Party> parties)
         {
             "".PrintStringToConsole();
             "Have a nice day!".PrintStringToConsole();

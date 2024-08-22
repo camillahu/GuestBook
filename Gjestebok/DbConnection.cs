@@ -26,7 +26,73 @@ namespace GuestBook
         }
         
 
-        public void GetAllParties()
+        public void GetAllParties(List<Party> parties)
+        {
+            using SqlConnection connection = DbCon();
+
+            const string querySelectAllGuests = "SELECT LastName, FirstName, PartyDate FROM dbo.Parties";
+
+            SqlCommand command = new(querySelectAllGuests, connection);
+
+            try
+            {
+                SqlDataReader reader = command.ExecuteReader(); //sqldatareader leser dataen så fort første bokstav er lest in real time, så man slipper å vente på at all dataen er lasta inn. 
+
+                while (reader.Read())
+                {
+                    var partyId = reader["Id"];
+                    var firstName = reader["FirstName"];
+                    var lastName = reader["LastName"];
+                    var partyDate = reader["PartyDate"];
+                    //int numOfGuests = GetNumOfGuests(partyId);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                $"Error + {ex.Message}".PrintStringToConsole();
+            }
+        }
+
+        public int GetNumOfGuests(int partyId)
+        {
+            using SqlConnection connection = DbCon();
+            int PartyId = Convert.ToInt32(partyId);
+            string query = $"SELECT COUNT(*) FROM dbo.Guests WHERE PartyId = {PartyId}";
+            
+            SqlCommand command = new(query, connection);
+
+            try
+            {
+                int count = (int)command.ExecuteScalar(); //gjøre det sånn eller med tryparse?
+                return count;
+            }
+            catch (Exception ex)
+            {
+                $"Error: {ex.Message}".PrintStringToConsole();
+                return -1;
+            }
+        }
+
+        public void UpdateNumOfGuests(int partyId, int count)
+        {
+            using SqlConnection connection = DbCon();
+            string query = $"UPDATE dbo.Parties SET NumOfGuests = {count} WHERE Id = {partyId}";
+            SqlCommand command = new(query, connection);
+
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                $"Error + {ex.Message}".PrintStringToConsole();
+            }
+        }
+
+
+        public void AddAllParties()
         {
             using SqlConnection connection = DbCon();
 
@@ -55,7 +121,7 @@ namespace GuestBook
         {
             using SqlConnection connection = DbCon();
 
-            const string querySelectAllGuests = "SELECT * FROM Parties JOIN Guests ON Parties.Id = Guests.PartyId";
+            const string querySelectAllGuests = "SELECT * FROM Parties RIGHT JOIN Guests ON Parties.Id = Guests.PartyId";
 
             SqlCommand command = new(querySelectAllGuests, connection);
 

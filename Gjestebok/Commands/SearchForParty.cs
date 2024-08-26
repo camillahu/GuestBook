@@ -13,15 +13,10 @@ namespace GuestBook.Commands
         public string Text => "Search for party";
         public void Execute(DbConnection connection, List<Party> parties)
         {
-            string name = "Type your name search here:".RequestString();
+            string search = "Type your name search here:".RequestString();
 
-            //connection.FindParty(name);
-            "".PrintStringToConsole();
-        }
-
-        public void Execute(Party newParty)
-        {
-            
+            string searchResult = connection.FindParty(search);
+            searchResult.PrintStringToConsole();
         }
     }
 }

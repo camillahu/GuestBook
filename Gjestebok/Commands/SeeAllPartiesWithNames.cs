@@ -13,8 +13,19 @@ namespace GuestBook.Commands
         public string Text => "See all parties with names";
         public void Execute(DbConnection connection, List<Party> parties)
         {
-            connection.GetAllPartiesWNames();
-            "".PrintStringToConsole();
+            connection.GetAllPartiesWNames(parties);
+
+            foreach (Party p in parties)
+            {
+                "".PrintStringToConsole();
+                $"Booking for: {p.LastName}, {p.FirstName}".PrintStringToConsole();
+                $"Date: {p.PartyDate}".PrintStringToConsole();
+                $"Size: {p.NumOfGuests}".PrintStringToConsole();
+                p.PrintGuests();
+                "".PrintStringToConsole();
+            }
+
+            
         }
     }
 }

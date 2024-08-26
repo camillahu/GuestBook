@@ -11,6 +11,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 
 namespace GuestBook
 {
@@ -24,13 +25,12 @@ namespace GuestBook
             connection.Open();
             return connection;
         }
-        
 
         public void GetAllParties(List<Party> parties)
         {
             using SqlConnection connection = DbCon();
 
-            const string querySelectAllGuests = "SELECT LastName, FirstName, PartyDate FROM dbo.Parties";
+            const string querySelectAllGuests = "SELECT LastName, FirstName, PartyDate, NumOfGuests, Id FROM dbo.Parties";
 
             SqlCommand command = new(querySelectAllGuests, connection);
 
@@ -40,18 +40,19 @@ namespace GuestBook
 
                 while (reader.Read())
                 {
-                    var partyId = reader["Id"];
-                    var firstName = reader["FirstName"];
-                    var lastName = reader["LastName"];
-                    var partyDate = reader["PartyDate"];
-                    //int numOfGuests = GetNumOfGuests(partyId);
-                }
+                    string firstName = (string)reader["FirstName"];
+                    string lastName = (string)reader["LastName"];
+                    DateTime partyDate = (DateTime)reader["PartyDate"];
+                    int numOfGuests = (int)reader["NumOfGuests"];
+                    int id = (int)reader["ID"];
 
+                    parties.Add(new Party(firstName, lastName, partyDate, numOfGuests, id));
+                }
                 reader.Close();
             }
             catch (Exception ex)
             {
-                $"Error + {ex.Message}".PrintStringToConsole();
+                $"Error: {ex.Message}".PrintStringToConsole();
             }
         }
 
@@ -91,57 +92,75 @@ namespace GuestBook
             }
         }
 
-
-        public void AddAllParties()
+        public void GetAllPartiesWNames(List<Party> parties)
         {
+            GetAllParties(parties);
             using SqlConnection connection = DbCon();
-
-            const string querySelectAllGuests = "SELECT LastName, FirstName, PartyDate FROM dbo.Parties";
-
-            SqlCommand command = new(querySelectAllGuests, connection);
+            const string query = "SELECT Lastname, FirstName, IsBookingName, PartyId, Id FROM dbo.Guests";
+            SqlCommand command = new(query, connection);
 
             try
             {
-                SqlDataReader reader = command.ExecuteReader(); //sqldatareader leser dataen så fort første bokstav er lest in real time, så man slipper å vente på at all dataen er lasta inn. 
+                SqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    $"{reader["FirstName"]}, {reader["LastName"]}, {reader["PartyDate"]}".PrintStringToConsole();
-                }
+                    string firstName = (string)reader["FirstName"];
+                    string lastName = (string)reader["LastName"];
+                    bool isBookingName = (bool)reader["IsBookingName"];
+                    int partyId = (int)reader["PartyId"];
+                    int id = (int)reader["Id"];
 
+                    foreach (Party p in parties.Where(p => p.Id == partyId))
+                    {
+                        p.AddGuest(new Guest(firstName, lastName, isBookingName, partyId, id));
+                    }
+                }
                 reader.Close();
             }
             catch (Exception ex)
             {
-                $"Error + {ex.Message}".PrintStringToConsole();
+                $"Error: {ex.Message}".PrintStringToConsole();
             }
         }
 
-        public void GetAllPartiesWNames()
+        public string FindParty(string search)
         {
             using SqlConnection connection = DbCon();
-
-            const string querySelectAllGuests = "SELECT * FROM Parties RIGHT JOIN Guests ON Parties.Id = Guests.PartyId";
-
-            SqlCommand command = new(querySelectAllGuests, connection);
+            string query = $"SELECT p.Id AS PartyId, " +
+                           $"STRING_AGG(CONCAT(g.LastName, ', ', g.FirstName), CHAR(10)) AS Guests " +
+                           $"FROM dbo.Guests AS g " +
+                           $"JOIN dbo.Parties AS p ON g.PartyId = p.Id " +
+                           $"WHERE g.LastName = '{search}' OR g.FirstName = '{search}' " +
+                           $"GROUP BY p.Id " +
+                           $"ORDER BY p.Id";
+            SqlCommand command = new(query, connection);
 
             try
             {
-                SqlDataReader reader = command.ExecuteReader(); //sqldatareader leser dataen så fort første bokstav er lest in real time, så man slipper å vente på at all dataen er lasta inn. 
+                SqlDataReader reader = command.ExecuteReader();
+                StringBuilder result = new StringBuilder();
+                string firstName = (string)reader["FirstName"];
+                string lastName = (string)reader["LastName"];
+                string guests = (string)reader["Guests"];
 
                 while (reader.Read())
                 {
-                    $"{reader["FirstName"]}, {reader["LastName"]}, {reader["PartyDate"]}".PrintStringToConsole();
+                    result.AppendLine($"Booking for: {lastName}, {firstName}");
+                    result.AppendLine($"Guests:");
+                    result.AppendLine(guests);
+                    result.AppendLine();
                 }
 
-                reader.Close();
+                return result.ToString();
             }
             catch (Exception ex)
             {
-                $"Error + {ex.Message}".PrintStringToConsole();
+                return $"Error: {ex.Message}";
             }
         }
 
+        //#region adding
         public int AddPartyToDb(Party newParty)
         {
             using SqlConnection connection = DbCon();
@@ -204,6 +223,6 @@ namespace GuestBook
                 $"Error: {ex.Message}".PrintStringToConsole();
             }
         }
-
+        //#endregion 
     }
 }

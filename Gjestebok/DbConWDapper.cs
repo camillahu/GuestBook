@@ -30,7 +30,5 @@ namespace GuestBook
                 return (await connection.QueryAsync<Party>(query)).ToList();
             }
         }
-
-
     }
 }

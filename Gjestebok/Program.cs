@@ -24,12 +24,13 @@ void MainMenu()
 
     while (mainMenuRunning)
     {
+        ClearLists();
         ViewCommands();
         ICommand? choice = ChooseOption();
         choice?.Execute(connection, parties); //vits i å gjøre alt nullable?
         mainMenuRunning = true;
-
-    }  //ingenting funkeeeer
+        
+    }  
 }
 
 ICommand? ChooseOption()
@@ -50,33 +51,42 @@ void ViewCommands()
     }
 }
 
-void AddParty(Party newParty)
-{
-    parties.Add(newParty);
-}
-
-void FindParty(string name)
-{
-    // var match = parties.Where(party => party.ReservationName.Split(' ').Any(part => part.StartsWith(name, StringComparison.OrdinalIgnoreCase)));
-    //foreach (Party m in match)
-    //{
-    //    m.PrintNameAndGuestNum();
-    //}
-}
-
-void PrintBookList()
+void ClearLists()
 {
     foreach (Party p in parties)
     {
-        p.PrintNameAndGuestNum();
+        p.ClearGuests();
     }
+    parties.Clear();
 }
 
-void PrintDetailedBookList()
-{
-    foreach (Party p in parties)
-    {
-        p.PrintAllGuests();
-    }
-}
+//void AddParty(Party newParty)
+//{
+//    parties.Add(newParty);
+//}
+
+//void FindParty(string name)
+//{
+//    // var match = parties.Where(party => party.ReservationName.Split(' ').Any(part => part.StartsWith(name, StringComparison.OrdinalIgnoreCase)));
+//    //foreach (Party m in match)
+//    //{
+//    //    m.PrintNameAndGuestNum();
+//    //}
+//}
+
+//void PrintBookList()
+//{
+//    foreach (Party p in parties)
+//    {
+//        p.PrintNameAndGuestNum();
+//    }
+//}
+
+//void PrintDetailedBookList()
+//{
+//    foreach (Party p in parties)
+//    {
+//        p.PrintAllGuests();
+//    }
+//}
 

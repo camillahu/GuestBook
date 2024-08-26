@@ -13,7 +13,18 @@ namespace GuestBook
         public DateTime PartyDate { get; }
         public int NumOfGuests { get;}
 
+        public int Id { get; }
+
         private List<Guest> Guests {get;} = [];
+
+        public Party(string firstName, string lastName, DateTime date, int numOfGuests, int id)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            PartyDate = date;
+            NumOfGuests = numOfGuests;
+            Id = id;
+        }
 
         public Party(string firstName, string lastName, DateTime date, int numOfGuests)
         {
@@ -23,15 +34,9 @@ namespace GuestBook
             NumOfGuests = numOfGuests;
         }
 
-        public int GetPartySize()
+        public void ClearGuests()
         {
-            return Guests.Count;
-        }
-
-        public void PrintNameAndGuestNum()
-        {
-            "".PrintStringToConsole();
-            //$"Name: {ReservationName} \n Number of guests: {GetPartySize()}".PrintStringToConsole();
+            Guests.Clear();
         }
 
         public void AddGuest(Guest newGuest)
@@ -39,14 +44,32 @@ namespace GuestBook
             Guests.Add(newGuest);
         }
 
-        public void PrintAllGuests()
+        //public int GetPartySize()
+        //{
+        //    return Guests.Count;
+        //}
+
+        public void PrintGuests()
         {
-            "".PrintStringToConsole();
-            //$"Reservation name: {ReservationName}".PrintStringToConsole();
-            foreach (Guest guest in Guests)
+            foreach (Guest g in Guests)
             {
-                $"{guest.FirstName} {guest.LastName}".PrintStringToConsole();
+                if(!g.IsBookingName) g.PrintInfo();
             }
         }
+
+        //public void AddGuest(Guest newGuest)
+        //{
+        //    Guests.Add(newGuest);
+        //}
+
+        //public void PrintAllGuests()
+        //{
+        //    "".PrintStringToConsole();
+        //    //$"Reservation name: {ReservationName}".PrintStringToConsole();
+        //    foreach (Guest guest in Guests)
+        //    {
+        //        $"{guest.FirstName} {guest.LastName}".PrintStringToConsole();
+        //    }
+        //}
     }
 }

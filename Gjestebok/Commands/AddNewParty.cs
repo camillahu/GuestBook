@@ -16,8 +16,6 @@ namespace GuestBook.Commands
 
         public void Execute(DbConnection dbConnection, List<Party> parties)
         {
-            //hvordan få sendt nytt party til lista i program? 
-
             Party newParty = AddParty();
             int partyId = dbConnection.AddPartyToDb(newParty);
             Guest bookingGuest = GetBookingGuest(newParty, partyId);

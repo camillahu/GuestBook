@@ -11,19 +11,18 @@ namespace GuestBook
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsBookingName { get; set; } 
-        public int PartyId { get; set; } 
-        //#region test
-        
+        public int PartyId { get; set; }
 
-        //#endregion 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="firstName">edwfwefewf</param>
-        /// <param name="lastName"></param>
-        /// <param name="isBookingName"></param>
-        /// <param name="partyId"></param>
+        public int Id { get; }
+    
+        public Guest(string firstName, string lastName, bool isBookingName, int partyId, int id)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            IsBookingName = isBookingName;
+            PartyId = partyId;
+            Id = id;
+        }
         public Guest(string firstName, string lastName, bool isBookingName, int partyId)
         {
             FirstName = firstName;
@@ -31,5 +30,11 @@ namespace GuestBook
             IsBookingName = isBookingName;
             PartyId = partyId;
         }
+
+        public void PrintInfo()
+        {
+            $"Name: {LastName}, {FirstName}".PrintStringToConsole();
+        }
+
     }
 }

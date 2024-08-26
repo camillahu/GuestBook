@@ -13,7 +13,15 @@ namespace GuestBook.Commands
         public void Execute(DbConnection connection, List<Party> parties)
         {
             connection.GetAllParties(parties);
-            "".PrintStringToConsole(); 
+
+            foreach (Party p in parties)
+            {
+                "".PrintStringToConsole();
+                $"Booking for: {p.LastName}, {p.FirstName}".PrintStringToConsole();
+                $"Date: {p.PartyDate}".PrintStringToConsole();
+                $"Size: {p.NumOfGuests}".PrintStringToConsole();
+                "".PrintStringToConsole();
+            }
         }
     }
 }

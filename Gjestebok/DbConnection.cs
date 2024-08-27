@@ -126,39 +126,91 @@ namespace GuestBook
 
         public string FindParty(string search)
         {
+
             using SqlConnection connection = DbCon();
-            string query = $"SELECT p.Id AS PartyId, " +
-                           $"STRING_AGG(CONCAT(g.LastName, ', ', g.FirstName), CHAR(10)) AS Guests " +
-                           $"FROM dbo.Guests AS g " +
-                           $"JOIN dbo.Parties AS p ON g.PartyId = p.Id " +
-                           $"WHERE g.LastName = '{search}' OR g.FirstName = '{search}' " +
-                           $"GROUP BY p.Id " +
-                           $"ORDER BY p.Id";
+            string query = "SELECT p.Id, " +
+                           "p.LastName, " +
+                           "p.FirstName, " +
+                           "STRING_AGG(" +
+                           "CASE " +
+                           "WHEN g.FirstName = p.Firstname AND g.LastName = p.LastName THEN NULL" +
+                           "ELSE CONCAT(g.FirstName, ' ', g.LastName) " +
+                           "END," +
+                           "CHAR(10)" +
+                           ") AS Guests " +
+                           "FROM dbo.Guests AS g " +
+                           "JOIN dbo.Parties AS p ON g.PartyId = p.Id " +
+                           "WHERE g.LastName = @search OR g.FirstName = @search " +
+                           "GROUP BY p.Id, p.LastName, p.FirstName " +
+                           "ORDER BY p.Id;";
+
             SqlCommand command = new(query, connection);
+            command.Parameters.AddWithValue("@search", search); //prepared statement
 
             try
             {
+                connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-                StringBuilder result = new StringBuilder();
-                string firstName = (string)reader["FirstName"];
-                string lastName = (string)reader["LastName"];
-                string guests = (string)reader["Guests"];
 
-                while (reader.Read())
+                StringBuilder result = new StringBuilder();
+
+                while (reader.Read()) // Sørg for at vi leser data før vi henter dem
                 {
+                    string firstName = (string)reader["p.LastName"];
+                    string lastName = (string)reader["p.FirstName"];
+                    string guests = (string)reader["Guests"];
+
                     result.AppendLine($"Booking for: {lastName}, {firstName}");
-                    result.AppendLine($"Guests:");
+                    result.AppendLine("Guests:");
                     result.AppendLine(guests);
                     result.AppendLine();
                 }
 
-                return result.ToString();
+                reader.Close(); // Lukk reader når vi er ferdige
+                return result.Length > 0 ? result.ToString() : "No matching parties found.";
             }
             catch (Exception ex)
             {
                 return $"Error: {ex.Message}";
             }
-        }
+            finally
+            {
+                connection.Close();
+            }
+        
+        //using SqlConnection connection = DbCon();
+        //string query = $"SELECT p.Id AS PartyId, p.LastName, p.FirstName " +
+        //               $"STRING_AGG(CONCAT(g.LastName, ', ', g.FirstName), CHAR(10)) AS Guests " +
+        //               $"FROM dbo.Guests AS g " +
+        //               $"JOIN dbo.Parties AS p ON g.PartyId = p.Id " +
+        //               $"WHERE g.LastName = '{search}' OR g.FirstName = '{search}' " +
+        //               $"GROUP BY p.Id, " +
+        //               $"ORDER BY p.Id";
+        //SqlCommand command = new(query, connection);
+
+        //try
+        //{
+        //    SqlDataReader reader = command.ExecuteReader();
+        //    //StringBuilder result = new StringBuilder();
+        //    //string firstName = (string)reader["FirstName"];
+        //    //string lastName = (string)reader["LastName"];
+        //    //string guests = (string)reader["Guests"];
+
+        //    while (reader.Read())
+        //    {
+        //        result.AppendLine($"Booking for: {lastName}, {firstName}");
+        //        result.AppendLine($"Guests:");
+        //        result.AppendLine(guests);
+        //        result.AppendLine();
+        //    }
+
+        //    return result.ToString();
+        //}
+        //catch (Exception ex)
+        //{
+        //    return $"Error: {ex.Message}";
+        //}
+    }
 
         //#region adding
         public int AddPartyToDb(Party newParty)

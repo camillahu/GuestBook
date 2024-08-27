@@ -133,7 +133,7 @@ namespace GuestBook
                            "p.FirstName, " +
                            "STRING_AGG(" +
                            "CASE " +
-                           "WHEN g.FirstName = p.Firstname AND g.LastName = p.LastName THEN NULL" +
+                           "WHEN g.FirstName = p.Firstname AND g.LastName = p.LastName THEN NULL " +
                            "ELSE CONCAT(g.FirstName, ' ', g.LastName) " +
                            "END," +
                            "CHAR(10)" +
@@ -156,8 +156,8 @@ namespace GuestBook
 
                 while (reader.Read()) // Sørg for at vi leser data før vi henter dem
                 {
-                    string firstName = (string)reader["p.LastName"];
-                    string lastName = (string)reader["p.FirstName"];
+                    string firstName = (string)reader["LastName"];
+                    string lastName = (string)reader["FirstName"];
                     string guests = (string)reader["Guests"];
 
                     result.AppendLine($"Booking for: {lastName}, {firstName}");

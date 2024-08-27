@@ -126,7 +126,6 @@ namespace GuestBook
 
         public string FindParty(string search)
         {
-
             using SqlConnection connection = DbCon();
             string query = "SELECT p.Id, " +
                            "p.LastName, " +
@@ -149,7 +148,6 @@ namespace GuestBook
 
             try
             {
-                connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
 
                 StringBuilder result = new StringBuilder();
